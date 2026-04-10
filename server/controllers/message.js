@@ -1,17 +1,18 @@
 import { Conversation } from "../models/conversationmodel.js";
 import { Message } from "../models/messagemodel.js";
+import { getReceiverSocketId, io } from "../socket/socket.js";
 
-export const sendMessages = async (req , res) =>{
+export const sendMessages = async (req, res) => {
     try {
-        const {message} = req.body;
-        const {id: receiverId} = req.params;
+        const { message } = req.body;
+        const { id: receiverId } = req.params;
         const senderId = req.user._id;
 
         let conversation = await Conversation.findOne({
-           participants: {$all : [senderId, receiverId]},
+            participants: { $all: [senderId, receiverId] },
         });
 
-        if(!conversation){
+        if (!conversation) {
             conversation = await Conversation.create({
                 participants: [senderId, receiverId],
             });
@@ -23,17 +24,22 @@ export const sendMessages = async (req , res) =>{
             message
         });
 
-        if(newMessages){
+        if (newMessages) {
             conversation.messages.push(newMessages._id);
         }
-
-        //SOCKET IO functionality will go here
 
         // await conversation.save();
         // await newMessages.save();
 
         //this will run in parallel
-        Promise.all([conversation.save(), newMessages.save()]);
+        await Promise.all([conversation.save(), newMessages.save()]);
+
+        //SOCKET IO functionality will go here
+        const receiverSocketId = getReceiverSocketId(receiverId);
+        if(receiverSocketId){
+            //io.to(<socket_.id>).emit() used to send events to specific client
+            io.to(receiverSocketId).emit("newMessage", newMessages)
+        }
 
         res.status(201).json(newMessages);
 
@@ -45,22 +51,22 @@ export const sendMessages = async (req , res) =>{
     };
 }
 
-export const getMessages = async (req, res) =>{
+export const getMessages = async (req, res) => {
     try {
-        const {id: userTOChatId} = req.params;
+        const { id: userTOChatId } = req.params;
         const senderId = req.user._id;
 
         const conversation = await Conversation.findOne({
-            participants: { $all : [senderId, userTOChatId]},
+            participants: { $all: [senderId, userTOChatId] },
         }).populate("messages")   //it will return whole messages object that contain senderId, reciverId etc..
         //.populate("messages", "message")   // return only message
 
-        if(!conversation){
+        if (!conversation) {
             return res.status(200).json([]); // no messages yet
         }
 
         res.status(200).json(conversation.messages);
-        
+
     } catch (e) {
         console.log("Error in getMessages controller ", e.message)
         res.status(500).json({

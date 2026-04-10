@@ -4,7 +4,6 @@ import generateTokenandSetCookie from "../utils/generateJWTtoken.js";
 
 export const signup = async (req, res) => {
     try {
-        console.log(req.body);
         const { fullname, username, password, confirmPassword, gender } = req.body;
         if (confirmPassword !== password) {
             return res.status(400).json({
@@ -24,7 +23,8 @@ export const signup = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, salt);
 
         const boyProfilePic = `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`
-        const girlProfilePic = `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`
+
+        const girlProfilePic = `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}_female`
 
         const newUser = new User({
             fullname,
@@ -60,25 +60,25 @@ export const signup = async (req, res) => {
 
 export const login = async (req, res) => {
     try {
-        const {username, password} = req.body;
+        const { username, password } = req.body;
 
-        const user = await User.findOne({username});
-        if(!user){
+        const user = await User.findOne({ username });
+        if (!user) {
             return res.status(400).json({
                 error: "Invalid username"
             });
         }
 
         const passwordMatch = await bcrypt.compare(password, user.password)
-        if(passwordMatch){
+        if (passwordMatch) {
 
             generateTokenandSetCookie(user._id, res);
 
             return res.status(200).json({
-               _id: user._id,
-               fullname: user.fullname,
-               username: user.username,
-               profilePic: user.profilePic,
+                _id: user._id,
+                fullname: user.fullname,
+                username: user.username,
+                profilePic: user.profilePic,
             });
         }
 
@@ -97,7 +97,7 @@ export const login = async (req, res) => {
 
 export const logout = (req, res) => {
     try {
-        res.cookie("jwt", "", {maxAge: 0});
+        res.cookie("jwt", "", { maxAge: 0 });
         res.status(200).json({
             message: "Logged out successfully"
         });

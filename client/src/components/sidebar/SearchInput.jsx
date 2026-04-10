@@ -1,4 +1,3 @@
-import React from 'react'
 import { useState } from 'react';
 import { IoSearch } from "react-icons/io5";
 import useConversation from '../../zustand/useConversation';
@@ -30,7 +29,7 @@ const SearchInput = () => {
       <input
         type="text"
         placeholder='Search...'
-        className='input input-bordered rounded-full'
+        className='input input-bordered rounded-full flex-1 w-full min-w-0'
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />

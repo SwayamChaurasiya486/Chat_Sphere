@@ -28,7 +28,7 @@ const SignUp = () => {
     }
 
     return (
-        <div className='flex flex-col items-center justify-center min-w-96 mx-auto'>
+        <div className='flex flex-col items-center justify-center w-full max-w-md px-4 mx-auto'>
             <div className='w-full p-6 rounded-lg shadow-md bg-white/10 backdrop-blur-lg border border-white/20'>
 
                 <h1 className='text-3xl font-semibold text-center text-gray-300'>
@@ -73,7 +73,7 @@ const SignUp = () => {
                         <label className='label p-2 '>
                             <span className='text-base label-text'>Confirm Password</span>
                         </label>
-                        <input type="text" placeholder='Ss@12345' className='w-full mb-2 input input-bordered h-10'
+                        <input type="password" placeholder='Ss@12345' className='w-full mb-2 input input-bordered h-10'
                             value={inputs.confirmPassword}
                             onChange={(e) => setInputs({ ...inputs, confirmPassword: e.target.value })}
                         />
