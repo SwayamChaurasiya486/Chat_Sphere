@@ -10,7 +10,7 @@ import { useAuthContext } from './context/AuthContext'
 function App() {
   const {authuser} = useAuthContext();
   return (
-    <div className='p-4 h-screen flex items-center justify-center bg-cover bg-center' style={{ backgroundImage: "url('/bggg.avif')" }}>
+    <div className='p-4 min-h-screen flex items-center justify-center bg-cover bg-center overflow-auto' style={{ backgroundImage: "url('/bggg.avif')" }}>
      
      <Routes>
       <Route path='/' element= {authuser ? <Home/> : <Navigate to= "/login" /> } />
