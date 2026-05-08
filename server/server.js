@@ -15,10 +15,13 @@ const __dirname = path.dirname(__filename);
 
 app.use(express.json());
 app.use(cookieParser());
-
-if (process.env.NODE_ENV === "development") {
-    app.use(cors({ origin: "http://localhost:3000", credentials: true }));
-}
+app.use(cors({
+    origin: [
+        "http://localhost:3000",
+        "https://chat-sphere-xi-gules.vercel.app"
+    ],
+    credentials: true
+}));
 
 
 
