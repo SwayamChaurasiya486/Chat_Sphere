@@ -12,7 +12,9 @@ const useGetMessages = () => {
             setLoading(true);
 
             try {
-                const res = await fetch(`${API}/api/messages/${selectedConversation._id}`)
+                const res = await fetch(`${API}/api/messages/${selectedConversation._id}`, {
+                    credentials: "include"
+                })
 
                 const data = await res.json();
                 if (data.error) throw new Error(data.error)
@@ -27,10 +29,10 @@ const useGetMessages = () => {
 
             }
         }
-        if(selectedConversation?._id) getMessages();
+        if (selectedConversation?._id) getMessages();
 
-    },[selectedConversation?._id , setMessages])
+    }, [selectedConversation?._id, setMessages])
 
-    return {messages, loading}
+    return { messages, loading }
 }
 export default useGetMessages

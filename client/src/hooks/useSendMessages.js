@@ -14,6 +14,7 @@ const useSendMessages = () => {
             const res = await fetch(`${API}/api/messages/send/${selectedConversation._id}`, {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
+                credentials: "include",
                 body: JSON.stringify({ message })
             })
 
